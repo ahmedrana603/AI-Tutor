@@ -1,0 +1,62 @@
+
+
+
+@model AITutorWebsite.Models.AIImage
+@{
+    ViewData["Title"] = "Edit AI Image";
+}
+
+<div class="container-fluid py-5">
+    <h1>Edit AI Image</h1>
+    <hr />
+
+    @if (TempData["Error"] != null)
+    {
+        <div class="alert alert-danger">@TempData["Error"]</div>
+    }
+
+    <!-- enctype zaroori hai file upload ke liye -->
+    <form asp-action="Edit" method="post" enctype="multipart/form-data">
+        <input type="hidden" asp-for="Id" />
+
+        <div class="mb-3">
+            <label class="form-label" asp-for="Prompt"></label>
+            <textarea asp-for="Prompt" class="form-control"></textarea>
+        </div>
+
+        <div class="mb-3">
+            <label class="form-label" asp-for="ImageGenerator"></label>
+            <input asp-for="ImageGenerator" class="form-control" />
+        </div>
+
+        <!-- current image dikhao -->
+        <div class="mb-3">
+            <label class="form-label">Current Image</label><br />
+            <img src="@Model.Filename" alt="Current Image" class="img-thumbnail mb-2" style="max-width:200px;" />
+        </div>
+
+        <!-- naya image upload karne ka option -->
+        <div class="mb-3">
+            <label class="form-label">Upload New Image (optional)</label>
+            <input type="file" name="ImageFile" class="form-control" accept="image/*" />
+        </div>
+
+        <div class="mb-3">
+            <label class="form-label" asp-for="UploadDate"></label>
+            <input asp-for="UploadDate" class="form-control" readonly />
+        </div>
+
+        <div class="mb-3">
+            <label class="form-label" asp-for="Like"></label>
+            <input asp-for="Like" class="form-control" readonly />
+        </div>
+
+        <div class="mb-3 form-check">
+            <input class="form-check-input" asp-for="canIncreaseLike" />
+            <label class="form-check-label" asp-for="canIncreaseLike"></label>
+        </div>
+
+        <button type="submit" class="btn btn-primary">Save</button>
+        <a class="btn btn-secondary" href="@Url.Action("Index")">Back</a>
+    </form>
+</div>

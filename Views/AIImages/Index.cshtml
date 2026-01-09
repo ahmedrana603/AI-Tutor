@@ -1,0 +1,108 @@
+@model IEnumerable<AITutorWebsite.Models.AIImage>
+@{
+    ViewData["Title"] = "AI Image Generator";
+}
+
+<div id="aiimage-page">
+    <div class="container-fluid py-5">
+        @if (TempData["Success"] != null)
+        {
+            <div class="alert alert-success alert-dismissible fade show" role="alert">
+                <i class="fas fa-check-circle me-2"></i>@TempData["Success"]
+                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+            </div>
+        }
+
+        @if (!User.Identity.IsAuthenticated)
+        {
+            <!-- Not Logged In -->
+            <div class="alert alert-warning">
+                <h4>Welcome to AI Image Gallery!</h4>
+                <p>You can view all uploaded AI images, but to like or upload your own, please register or log in.</p>
+                <a href="/Account/Register" class="btn btn-primary me-2">Register Now</a>
+                <a href="/Account/Login" class="btn btn-outline-secondary">Login</a>
+            </div>
+        }
+        else
+        {
+            <!-- Logged In -->
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <h2>AI Image Gallery</h2>
+                <a href="/AIImages/Create" class="btn btn-warning btn-lg px-4 py-2">
+                    <i class="fas fa-upload"></i> Upload New Image
+                </a>
+            </div>
+        }
+    </div>
+
+    <div class="container aiimage-gallery">
+        @if (Model.Any())
+        {
+            <div class="row">
+                @foreach (var image in Model)
+                {
+                    <div class="col-6 col-md-4 col-lg-2 mb-4">
+                        <div class="card shadow-sm h-100">
+                            <img src="@image.Filename" class="card-img-top" alt="AI Generated Image">
+
+                            <div class="card-body d-flex flex-column p-2">
+                                <h6 class="card-title text-truncate" title="@image.Prompt">@image.Prompt</h6>
+
+                                <p class="card-text small mb-1">
+                                    <strong>Tool:</strong> <span>@image.ImageGenerator</span>
+                                </p>
+                                <p class="card-text small mb-1">
+                                    <strong>Date:</strong> <span>@image.UploadDate.ToString("MMM dd, yyyy")</span>
+                                </p>
+                                
+                                @if (User.Identity.IsAuthenticated)
+                                {
+                                    <div class="mt-auto">
+                                        <div class="d-flex justify-content-between align-items-center">
+                                            <form asp-action="ToggleLike" asp-route-id="@image.Id" method="post" class="d-inline">
+                                                @Html.AntiForgeryToken()
+                                                <button type="submit" class="btn btn-outline-warning btn-sm">
+                                                    👍 (@image.Like)
+                                                </button>
+                                            </form>
+
+                                            @if (User.IsInRole("Admin"))
+                                            {
+                                                <div class="btn-group btn-group-sm">
+                                                    <a asp-action="Edit" asp-route-id="@image.Id" class="btn btn-outline-secondary btn-sm">
+                                                        <i class="fas fa-edit"></i>
+                                                    </a>
+                                                    <a asp-action="Delete" asp-route-id="@image.Id" class="btn btn-outline-danger btn-sm">
+                                                        <i class="fas fa-trash"></i>
+                                                    </a>
+                                                </div>
+                                            }
+                                        </div>
+                                    </div>
+                                }
+                                else
+                                {
+                                    <div class="mt-auto text-center text-muted small">
+                                        👍 @image.Like likes
+                                    </div>
+                                }
+                            </div>
+                        </div>
+                    </div>
+                }
+            </div>
+        }
+        else
+        {
+            <div class="text-center py-5">
+                <h4>No images uploaded yet!</h4>
+                <p class="text-muted">Be the first to upload an AI-generated image.</p>
+
+                @if (User.Identity.IsAuthenticated)
+                {
+                    <a href="/AIImages/Create" class="btn btn-primary">Upload Your First Image</a>
+                }
+            </div>
+        }
+    </div>
+</div> 

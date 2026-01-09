@@ -1,0 +1,44 @@
+@{
+    ViewData["Title"] = "Register";
+}
+
+<div class="container-fluid py-5" id="register-page">
+    <div class="row justify-content-center">
+        <div class="col-12">
+            <div class="card p-4">
+                <h3 class="mb-3 text-center">Register</h3>
+                
+                @if (TempData["Error"] != null)
+                {
+                    <div class="alert alert-danger">@TempData["Error"]</div>
+                }
+                
+                <form method="post" asp-action="Register">
+                    <div class="mb-3">
+                        <label class="form-label">Full Name</label>
+                        <input type="text" name="name" class="form-control" required />
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Email</label>
+                        <input type="email" name="email" class="form-control" required />
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Password</label>
+                        <input type="password" name="password" class="form-control" required minlength="6" />
+                        <div class="form-text">Password must be at least 6 characters long.</div>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Confirm Password</label>
+                        <input type="password" name="confirmPassword" class="form-control" required />
+                    </div>
+                    
+                    <button type="submit" class="btn btn-primary w-100">Create Account</button>
+                </form>
+                
+                <div class="text-center mt-3">
+                    <p>Already have an account? <a href="/Account/Login">Login here</a></p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

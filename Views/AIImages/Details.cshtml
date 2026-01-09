@@ -1,0 +1,25 @@
+@model AITutorWebsite.Models.AIImage
+@{
+    ViewData["Title"] = "AI Image Details";
+}
+
+<div class="container-fluid py-5">
+    <h1>Details</h1>
+    <hr />
+
+    <div class="row">
+        <div class="col-md-6">
+            <img src="@Model.Filename" class="img-fluid rounded" alt="@Model.Prompt" onerror="this.src='https://via.placeholder.com/800x600?text=AI+Image'" />
+        </div>
+        <div class="col-md-6">
+            <h3>@Model.ImageGenerator</h3>
+            <p class="text-muted">@Model.Prompt</p>
+            <p><strong>Upload Date:</strong> @Model.UploadDate.ToLocalTime()</p>
+            <p><strong>Likes:</strong> @Model.Like</p>
+            <div class="d-flex gap-2">
+                <a class="btn btn-outline-secondary" href="@Url.Action("Edit", new { id = Model.Id })">Edit</a>
+                <a class="btn btn-secondary" href="@Url.Action("Index")">Back</a>
+            </div>
+        </div>
+    </div>
+</div>

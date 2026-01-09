@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - AI Learning Platform</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Anton&family=Montserrat:wght@300;400;600;700&family=Niconne&display=swap"
+        rel="stylesheet">
+</head>
+
+<body>
+    <header class="full-width-header">
+        <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+            <div class="container-fluid">
+                <a class="navbar-brand fw-bold" href="@Url.Action("Index", "Home")">
+                    <i class="fas fa-brain me-2"></i>AI Learning Platform
+                </a>
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="collapse navbar-collapse" id="navbarNav">
+                    <ul class="navbar-nav me-auto">
+                        <li class="nav-item">
+                            <a class="nav-link" href="@Url.Action("Index", "Home")">
+                                <i class="fas fa-home me-1"></i>Home
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="@Url.Action("Index", "AIImages")">
+                                <i class="fas fa-image me-1"></i>AI Images
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="@Url.Action("Contact", "Home")">
+                                <i class="fas fa-envelope me-1"></i>Contact
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="@Url.Action("Index", "Home")#top">
+                                <i class="fas fa-robot me-1"></i>GenAI
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="@Url.Action("Index", "Creative")">
+                                <i class="fas fa-palette me-1"></i>Creative
+                            </a>
+                        </li>
+                        @* @if (User.IsInRole("Member") || User.IsInRole("Admin"))
+                        {
+                            <li class="nav-item">
+                                <a class="nav-link" href="@Url.Action("Create", "AIImages")">
+                                    <i class="fas fa-plus me-1"></i>Create Image
+                                </a>
+                            </li>
+                        }
+                        @if (User.IsInRole("Admin"))
+                        {
+                            <li class="nav-item">
+                                <a class="nav-link" href="@Url.Action("Index", "AITutor")">
+                                    <i class="fas fa-tools me-1"></i>Admin Tools
+                                </a>
+                            </li>
+                        } *@
+                    </ul>
+                    <ul class="navbar-nav">
+                        @if (User.Identity?.IsAuthenticated == true)
+                        {
+                            <li class="nav-item d-flex align-items-center text-white-50 me-2">
+                                Hello, @User.Identity.Name (@(User.IsInRole("Admin") ? "Admin" : User.IsInRole("Member") ?
+                                                            "Member" : "User"))
+                            </li>
+                            <li class="nav-item">
+                                <form method="post" asp-controller="Account" asp-action="Logout" class="d-inline">
+                                    <button type="submit" class="btn btn-sm btn-outline-light">Logout</button>
+                                </form>
+                            </li>
+                        }
+                        else
+                        {
+                            <li class="nav-item">
+                                <a class="nav-link" href="@Url.Action("Login", "Account")">
+                                    <i class="fas fa-user me-1"></i>Login
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="@Url.Action("Register", "Account")">
+                                    <i class="fas fa-user-plus me-1"></i>Register
+                                </a>
+                            </li>
+                        }
+                    </ul>
+                </div>
+            </div>
+        </nav>
+    </header>
+
+    <main class="full-width-main">
+        @RenderBody()
+    </main>
+
+    <footer class="site-footer full-width-footer">
+        <div class="container text-center">
+            <div class="footer-links">
+                <a href="@Url.Action("Index", "Home")">Home</a>
+                <a href="@Url.Action("Index", "AIImages")">AI Images</a>
+                <a href="@Url.Action("Contact", "Home")">Contact</a>
+
+            </div>
+
+            <div class="footer-social">
+                <a href="https://www.google.com" target="_blank" class="social-btn google">G</a>
+                <a href="https://www.facebook.com" target="_blank" class="social-btn facebook">f</a>
+                <a href="https://twitter.com" target="_blank" class="social-btn twitter">X</a>
+                <a href="https://www.linkedin.com" target="_blank" class="social-btn linkedin">in</a>
+            </div>
+        </div>
+    </footer>
+
+
+    <script src="https://code.jquery.com/jquery-3.7.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="~/js/site.js" asp-append-version="true"></script>
+    @await RenderSectionAsync("Scripts", required: false)
+</body>
+
+</html>

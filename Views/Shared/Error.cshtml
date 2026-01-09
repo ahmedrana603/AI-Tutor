@@ -1,0 +1,57 @@
+@model AITutorWebsite.Models.ErrorViewModel
+@{
+    ViewData["Title"] = "Error";
+}
+
+<div class="container-fluid py-5">
+    <div class="row">
+        <div class="col-lg-6 mx-auto text-center">
+            <div class="error-content">
+                <i class="fas fa-exclamation-triangle fa-5x text-warning mb-4"></i>
+                <h1 class="display-4 fw-bold mb-4">Oops! Something went wrong</h1>
+                <p class="lead mb-4">We're sorry, but an error occurred while processing your request.</p>
+                
+                @if (Model?.ShowRequestId == true)
+                {
+                    <p class="text-muted mb-4">
+                        <strong>Request ID:</strong> <code>@Model.RequestId</code>
+                    </p>
+                }
+                
+                <div class="error-actions">
+                    <a href="@Url.Action("Index", "Home")" class="btn btn-primary btn-lg me-3">
+                        <i class="fas fa-home me-2"></i>Go Home
+                    </a>
+                    <button class="btn btn-outline-secondary btn-lg" onclick="history.back()">
+                        <i class="fas fa-arrow-left me-2"></i>Go Back
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    .error-content {
+        background: white;
+        border-radius: 15px;
+        padding: 3rem;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+    }
+
+    .error-actions {
+        margin-top: 2rem;
+    }
+
+        @@media (max-width: 768px) {
+        .error-actions {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        .error-actions .btn {
+            width: 100%;
+        }
+    }
+</style>

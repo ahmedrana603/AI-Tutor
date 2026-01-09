@@ -1,0 +1,100 @@
+@model AITutorWebsite.Models.AIImage
+@{
+    ViewData["Title"] = "Create AI Image";
+}
+
+<div class="create-page">
+    <div class="create-overlay">
+        <h1 class="create-heading">Upload AI Image</h1>
+        <hr />
+
+        @if (TempData["Error"] != null)
+        {
+            <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                <i class="fas fa-exclamation-triangle me-2"></i>@TempData["Error"]
+                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+            </div>
+        }
+
+        @if (!ViewData.ModelState.IsValid)
+        {
+            <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                <i class="fas fa-exclamation-triangle me-2"></i>Please fix the following errors:
+                <ul class="mb-0 mt-2">
+                    @foreach (var error in ViewData.ModelState.Values.SelectMany(v => v.Errors))
+                    {
+                        <li>@error.ErrorMessage</li>
+                    }
+                </ul>
+                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+            </div>
+        }
+
+        <form asp-action="Create" method="post" enctype="multipart/form-data" class="create-form">
+            <div class="mb-3">
+                <label class="form-label" asp-for="Prompt">Image Caption / Description</label>
+                <input asp-for="Prompt" class="form-control" placeholder="Enter a description for your image" required />
+                <span asp-validation-for="Prompt" class="text-danger"></span>
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label" asp-for="ImageGenerator">AI Tool Used</label>
+                <input asp-for="ImageGenerator" class="form-control" placeholder="e.g., DALL-E, Midjourney, Stable Diffusion" required />
+                <span asp-validation-for="ImageGenerator" class="text-danger"></span>
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label">Upload Image</label>
+                <input type="file" name="ImageFile" class="form-control" accept="image/*" required />
+                <div class="form-text">Only JPG, JPEG, and PNG files are allowed.</div>
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label" asp-for="Like">Initial Like Count</label>
+                <input asp-for="Like" type="number" class="form-control" value="0" min="0" />
+                <div class="form-text">Set the initial number of likes for this image.</div>
+            </div>
+
+            <div class="mb-3 form-check">
+                <input class="form-check-input" asp-for="canIncreaseLike" checked />
+                <label class="form-check-label" asp-for="canIncreaseLike">Allow users to like this image</label>
+            </div>
+
+            <div class="d-flex justify-content-center gap-3">
+                <button type="submit" class="btn btn-success">
+                    <i class="fas fa-upload me-2"></i>Upload Image
+                </button>
+                <a class="btn btn-secondary" href="@Url.Action("Index")">
+                    <i class="fas fa-arrow-left me-2"></i>Back to Gallery
+                </a>
+            </div>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+    <script>
+        $(document).ready(function () {
+            // Show file name when selected
+            $('input[type="file"]').on('change', function () {
+                var fileName = $(this).val().split('\\').pop();
+                if (fileName) {
+                    $(this).next('.form-text').html('<i class="fas fa-check text-success me-1"></i>Selected: ' + fileName);
+                } else {
+                    $(this).next('.form-text').html('Only JPG, JPEG, and PNG files are allowed.');
+                }
+            });
+
+            // Prevent submission if no file selected
+            $('form').on('submit', function (e) {
+                var fileInput = $('input[type="file"]')[0];
+                if (!fileInput.files || fileInput.files.length === 0) {
+                    e.preventDefault();
+                    alert('Please select an image file.');
+                    return false;
+                }
+            });
+        });
+    </script>
+}

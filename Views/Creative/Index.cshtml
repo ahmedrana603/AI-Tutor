@@ -1,0 +1,232 @@
+@{
+    ViewData["Title"] = "Creative Tools";
+}
+
+<div class="container-fluid py-5" id="creative-page">
+    <div class="text-center mb-5">
+        <h1 class="display-4 fw-bold text-primary">
+            <i class="fas fa-palette me-3"></i>Creative Tools
+        </h1>
+        <p class="lead text-muted">Explore AI-powered creative tools and interactive learning experiences</p>
+    </div>
+
+    <div class="row g-4">
+        <!-- AI Tutor Card -->
+        <div class="col-lg-6">
+            <div class="card h-100 shadow-lg border-0">
+                <div class="card-header bg-gradient-primary text-white">
+                    <h3 class="card-title mb-0">
+                        <i class="fas fa-robot me-2"></i>AI Tutor
+                    </h3>
+                </div>
+                <div class="card-body p-4">
+                    <p class="card-text mb-4">Learn from the best AI tutors with comprehensive video tutorials and interactive content.</p>
+                    
+                    <div class="row g-3">
+                        <div class="col-md-6">
+                            <div class="d-grid">
+                                <a href="https://youtu.be/JTxsNm9IdYU?si=saKYzaDiJ6s16BTk" target="_blank" class="btn btn-outline-primary">
+                                    <i class="fab fa-youtube me-2"></i>ChatGPT Tutorial
+                                </a>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="d-grid">
+                                <a href="https://youtu.be/4jmsHaJ7xEA?si=PO--duLkNYkGdBM4" target="_blank" class="btn btn-outline-primary">
+                                    <i class="fab fa-youtube me-2"></i>AI Basics
+                                </a>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="d-grid">
+                                <a href="https://youtu.be/gmvvaobm7eQ?si=p0gWndvUi9wdlb6V" target="_blank" class="btn btn-outline-primary">
+                                    <i class="fab fa-youtube me-2"></i>Machine Learning
+                                </a>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="d-grid">
+                                <a href="https://youtu.be/Mubj_fqiAv8?si=mE5If5huLuF1iiDL" target="_blank" class="btn btn-outline-primary">
+                                    <i class="fab fa-youtube me-2"></i>Deep Learning
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="mt-4">
+                        <small class="text-muted">
+                            <i class="fas fa-info-circle me-1"></i>
+                            Click on any tutorial to open in YouTube
+                        </small>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- AI Quiz Generator Card -->
+        <div class="col-lg-6">
+            <div class="card h-100 shadow-lg border-0">
+                <div class="card-header bg-gradient-success text-white">
+                    <h3 class="card-title mb-0">
+                        <i class="fas fa-question-circle me-2"></i>AI Quiz Generator
+                    </h3>
+                </div>
+                <div class="card-body p-4">
+                    <p class="card-text mb-4">Test your knowledge with our AI-powered quiz generator. Get 10 random questions from our database of 20+ general knowledge questions.</p>
+                    
+                    <div class="d-grid mb-4">
+                        <button id="generateQuizBtn" class="btn btn-success btn-lg">
+                            <i class="fas fa-play me-2"></i>Generate Quiz
+                        </button>
+                    </div>
+                    
+                    <!-- Quiz Container -->
+                    <div id="quizContainer" class="d-none">
+                        <div class="quiz-header mb-3">
+                            <h5>General Knowledge Quiz</h5>
+                            <p class="text-muted">Answer all 10 questions to complete the quiz</p>
+                        </div>
+                        
+                        <form id="quizForm">
+                            <div id="questionsContainer"></div>
+                            
+                            <div class="d-flex gap-2 mt-4">
+                                <button type="submit" class="btn btn-primary">
+                                    <i class="fas fa-check me-2"></i>Submit Quiz
+                                </button>
+                                <button type="button" id="resetQuizBtn" class="btn btn-outline-secondary">
+                                    <i class="fas fa-redo me-2"></i>Reset
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                    
+                    <!-- Results Container -->
+                    <div id="resultsContainer" class="d-none">
+                        <div class="alert alert-info">
+                            <h5><i class="fas fa-trophy me-2"></i>Quiz Results</h5>
+                            <p id="scoreText" class="mb-0"></p>
+                        </div>
+                        <button id="newQuizBtn" class="btn btn-success">
+                            <i class="fas fa-plus me-2"></i>Take New Quiz
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        let currentQuiz = [];
+        let userAnswers = {};
+
+        $(document).ready(function() {
+            $('#generateQuizBtn').click(function() {
+                generateQuiz();
+            });
+
+            $('#resetQuizBtn').click(function() {
+                resetQuiz();
+            });
+
+            $('#newQuizBtn').click(function() {
+                resetQuiz();
+                generateQuiz();
+            });
+
+            $('#quizForm').submit(function(e) {
+                e.preventDefault();
+                submitQuiz();
+            });
+        });
+
+        function generateQuiz() {
+            $.ajax({
+                url: '/Creative/GenerateQuiz',
+                type: 'POST',
+                success: function(response) {
+                    if (response.success) {
+                        currentQuiz = response.questions;
+                        displayQuiz(currentQuiz);
+                        $('#quizContainer').removeClass('d-none');
+                        $('#resultsContainer').addClass('d-none');
+                        $('#generateQuizBtn').addClass('d-none');
+                    }
+                },
+                error: function() {
+                    alert('Error generating quiz. Please try again.');
+                }
+            });
+        }
+
+        function displayQuiz(questions) {
+            let html = '';
+            questions.forEach((question, index) => {
+                html += `
+                    <div class="question-card mb-4 p-3 border rounded">
+                        <h6 class="question-text">${index + 1}. ${question.question}</h6>
+                        <div class="options">
+                            <div class="form-check">
+                                <input class="form-check-input" type="radio" name="q${question.id}" value="A" id="q${question.id}_A">
+                                <label class="form-check-label" for="q${question.id}_A">A. ${question.optionA}</label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input" type="radio" name="q${question.id}" value="B" id="q${question.id}_B">
+                                <label class="form-check-label" for="q${question.id}_B">B. ${question.optionB}</label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input" type="radio" name="q${question.id}" value="C" id="q${question.id}_C">
+                                <label class="form-check-label" for="q${question.id}_C">C. ${question.optionC}</label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input" type="radio" name="q${question.id}" value="D" id="q${question.id}_D">
+                                <label class="form-check-label" for="q${question.id}_D">D. ${question.optionD}</label>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            });
+            $('#questionsContainer').html(html);
+        }
+
+        function submitQuiz() {
+            let score = 0;
+            let totalQuestions = currentQuiz.length;
+            
+            currentQuiz.forEach(question => {
+                let selectedAnswer = $(`input[name="q${question.id}"]:checked`).val();
+                if (selectedAnswer === question.correctAnswer) {
+                    score++;
+                }
+            });
+
+            let percentage = Math.round((score / totalQuestions) * 100);
+            let message = `You scored ${score} out of ${totalQuestions} (${percentage}%)`;
+            
+            if (percentage >= 80) {
+                message += ' - Excellent! 🌟';
+            } else if (percentage >= 60) {
+                message += ' - Good job! 👍';
+            } else {
+                message += ' - Keep practicing! 💪';
+            }
+
+            $('#scoreText').text(message);
+            $('#quizContainer').addClass('d-none');
+            $('#resultsContainer').removeClass('d-none');
+        }
+
+        function resetQuiz() {
+            $('#quizContainer').addClass('d-none');
+            $('#resultsContainer').addClass('d-none');
+            $('#generateQuizBtn').removeClass('d-none');
+            currentQuiz = [];
+            userAnswers = {};
+        }
+    </script>
+}
+
+
+
